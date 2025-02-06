@@ -1,0 +1,148 @@
+name: Pull Request Workflow
+on:
+  - pull_request
+
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for semantic-release
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Install dependencies
+        run: |
+          poetry install
+
+      - name: Upload workspace
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace
+          include-hidden-files: true
+          path: |
+            .
+            !.git
+            !.github
+            !node_modules
+            !.venv
+
+  verify:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: [lint]
+        include:
+          - task: lint
+            command: make lint
+    name: ${{ matrix.task }}
+    steps:
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Run ${{ matrix.task }}
+        run: |
+          poetry run ${{ matrix.command }}
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+    name: Test Python ${{ matrix.python-version }}
+    steps:
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
+
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Run tests
+        run: poetry run make test
+        timeout-minutes: 5
+
+  semantic-release-dry-run:
+    needs: setup
+    runs-on: ubuntu-latest
+    name: Semantic Release Dry Run
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for semantic-release to access git history
+          ref: ${{ github.head_ref }}  # This checks out the PR source branch
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install semantic-release
+        run: |
+          python -m pip install python-semantic-release==9.15.1
+
+      - name: Dry Run Semantic Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          semantic-release --noop version

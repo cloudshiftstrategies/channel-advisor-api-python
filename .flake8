@@ -1,0 +1,15 @@
+[flake8]
+max-line-length = 120
+exclude = 
+    .git,
+    __pycache__,
+    cdk.out,
+    build,
+    dist,
+    .eggs,
+    *.egg,
+    node_modules,
+    tests/**/snapshots/*.py,
+    .venv
+inline-quotes = double
+ignore = E402,W503,W504,F403,F405,E704,F811

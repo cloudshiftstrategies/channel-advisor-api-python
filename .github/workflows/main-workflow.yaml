@@ -1,0 +1,192 @@
+name: Main Workflow
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  setup:
+    name: Setup Environment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Required for semantic-release
+      
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+      
+      - name: Install dependencies
+        run: |
+          poetry install
+      
+      - name: Upload workspace
+        uses: actions/upload-artifact@v4
+        with:
+          name: workspace
+          include-hidden-files: true
+          path: |
+            .
+            !.git
+            !.github
+            !node_modules
+            !.venv
+
+  verify:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        task: [lint]
+        include:
+          - task: lint
+            command: make lint
+    name: ${{ matrix.task }}
+    steps:
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
+
+      - name: Set up python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Run ${{ matrix.task }}
+        run: |
+          poetry run ${{ matrix.command }}
+
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
+    name: Test Python ${{ matrix.python-version }}
+    steps:
+      - name: Download workspace
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
+
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Configure Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Cache virtualenv
+        uses: actions/cache@v4
+        with:
+          path: ./.venv
+          key: ${{ runner.os }}-venv-${{ hashFiles('**/poetry.lock') }}
+
+      - name: Run tests
+        run: poetry run make test
+        timeout-minutes: 5
+
+  release:
+    needs: [verify, test]
+    runs-on: ubuntu-latest
+    concurrency: release
+    outputs:
+      released: ${{ steps.release.outputs.released }}
+    steps:
+      # Note: we need to checkout the repository at the workflow sha in case during the workflow
+      # the branch was updated. To keep PSR working with the configured release branches,
+      # we force a checkout of the desired release branch but at the workflow sha HEAD.
+      - name: Setup | Checkout Repository at workflow sha
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.sha }}
+
+      - name: Setup | Force correct release branch on workflow sha
+        run: |
+          git checkout -B ${{ github.ref_name }} ${{ github.sha }}
+
+      - name: Action | Semantic Version Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9.15.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
+
+      # Add Poetry-based PyPI publishing steps
+      - name: Set up python
+        if: steps.release.outputs.released == 'true'
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Configure Poetry
+        if: steps.release.outputs.released == 'true'
+        uses: snok/install-poetry@v1
+        with:
+          version: 1.7.1
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      - name: Configure poetry credentials
+        if: steps.release.outputs.released == 'true'
+        run: |
+          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
+
+      - name: Build and publish
+        if: steps.release.outputs.released == 'true'
+        run: |
+          poetry build
+          poetry publish
+
+      # Add the download workspace as a separate step before build and publish
+      - name: Download workspace
+        if: steps.release.outputs.released == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: workspace
