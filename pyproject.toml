@@ -21,6 +21,10 @@ pytest-cov = "^6.0.0"
 instructor = "^1.7.2"
 boto3 = "^1.36.14"
 anthropic = "^0.45.2"
+python-dotenv = "^1.0.1"
+jupyter = "^1.1.1"
+pandas = "^2.2.3"
+autoflake = "^2.3.1"
 
 [build-system]
 requires = ["poetry-core"]
