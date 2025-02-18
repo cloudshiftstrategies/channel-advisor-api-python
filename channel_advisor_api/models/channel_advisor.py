@@ -65,10 +65,16 @@ class BaseProduct(BaseModel, ABC):
 
     @classmethod
     def by_sku(cls, sku: str) -> "MinProduct":
-        products = cls.all(filter=f"Sku eq '{sku}'")
+        escaped_sku = cls.escape_filter_value(sku)
+        products = cls.all(filter=f"Sku eq '{escaped_sku}'")
         if not products:
             raise ValueError(f"Product with SKU {sku} not found")
         return products[0]
+
+    @classmethod
+    def escape_filter_value(cls, value: str) -> str:
+        """Escapes special characters in filter values for the ChannelAdvisor API."""
+        return value.replace("'", "''")
 
     @classmethod
     def search_by_sku(cls, sku: str, limit: int = None, include_children: bool = False) -> List["MinProduct"]:
