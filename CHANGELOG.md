@@ -1,7 +1,20 @@
 # CHANGELOG
 
 
+## v0.1.1 (2025-02-18)
+
+### Bug Fixes
+
+- **by_sku**: Added escaping filters
+  ([`8d84eb4`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/8d84eb4ae92da158b1dc696c474dfc4a9095af49))
+
+
 ## v0.1.0 (2025-02-12)
+
+### Chores
+
+- **release**: Bump version to 0.1.0
+  ([`a851633`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/a851633e79b0e3fa4f4fc93233bc18b0f2241b4b))
 
 ### Features
 
