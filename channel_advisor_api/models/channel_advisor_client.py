@@ -116,6 +116,7 @@ class ChannelAdvisorClient:
             query_params["$top"] = [limit]
             next_link = parsed_url._replace(query=urlencode(query_params, doseq=True)).geturl()
         while next_link:
+            next_link = next_link.replace(ChannelAdvisorClient.CA_ENDPOINT, "")
             response = self.request("get", next_link)
             if not response:
                 logger.warning(f"Request get {next_link} returned None. Breaking loop")
