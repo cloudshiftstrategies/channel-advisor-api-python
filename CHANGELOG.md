@@ -1,12 +1,25 @@
 # CHANGELOG
 
 
+## v0.2.0 (2025-02-28)
+
+### Features
+
+- **llm**: Added Claude 3.7
+  ([`4ab9703`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/4ab970394d68b35aada8e36bcc6c5c5afec2353e))
+
+
 ## v0.1.2 (2025-02-28)
 
 ### Bug Fixes
 
 - **client**: Pagination
   ([`0bd0dc3`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/0bd0dc301bbcdd257de8cd2f3b5be4d727eff7bb))
+
+### Chores
+
+- **release**: Bump version to 0.1.2
+  ([`a7b8ae4`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/a7b8ae4a3f133ec32fbe0d4c139b6e8298680108))
 
 
 ## v0.1.1 (2025-02-18)
