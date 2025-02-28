@@ -1,12 +1,25 @@
 # CHANGELOG
 
 
+## v0.1.2 (2025-02-28)
+
+### Bug Fixes
+
+- **client**: Pagination
+  ([`0bd0dc3`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/0bd0dc301bbcdd257de8cd2f3b5be4d727eff7bb))
+
+
 ## v0.1.1 (2025-02-18)
 
 ### Bug Fixes
 
 - **by_sku**: Added escaping filters
   ([`8d84eb4`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/8d84eb4ae92da158b1dc696c474dfc4a9095af49))
+
+### Chores
+
+- **release**: Bump version to 0.1.1
+  ([`d1c42e1`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/d1c42e1633d64000eb380df46bebfca5e212664c))
 
 
 ## v0.1.0 (2025-02-12)
