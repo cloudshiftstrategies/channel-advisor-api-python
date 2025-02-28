@@ -21,6 +21,7 @@ logger = get_logger(__name__)
 
 class Models(StrEnum):
     CLAUDE_3_5_SONNET_V2 = "us.anthropic.claude-3-5-sonnet-20241022-v2:0"
+    CLAUDE_3_7_SONNET = "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
 
 
 class BaseProductWithAttributes(BaseModel):
@@ -42,7 +43,11 @@ class ChildProductWithAttributes(ParentProductWithAttributes):
 
 
 def llm_product(
-    product: MinProduct, is_parent: bool, xtra_context: Optional[str] = None, temperature: float = 0.7
+    product: MinProduct,
+    is_parent: bool,
+    xtra_context: Optional[str] = None,
+    temperature: float = 0.7,
+    model: Models = Models.CLAUDE_3_7_SONNET,
 ) -> BaseProductWithAttributes:
 
     if is_parent:
@@ -84,7 +89,7 @@ def llm_product(
     try:
         # Make API call with retry logic
         product_with_attributes, completion = AwsClient().claude_client.completions.create_with_completion(
-            model=Models.CLAUDE_3_5_SONNET_V2.value,
+            model=model.value,
             max_tokens=1024 * 10,
             max_retries=2,
             messages=messages,
