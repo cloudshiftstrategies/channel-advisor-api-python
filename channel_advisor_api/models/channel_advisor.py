@@ -252,7 +252,15 @@ class MinProduct(BaseProduct):
         "5) Maintain brand/model name consistency with title",
     )
     short_description: Optional[str] = Field(
-        None, alias="ShortDescription", description="Short description for SEO. Max length 300 characters."
+        None,
+        alias="ShortDescription",
+        description="Short text only description for SEO."
+        "1) Remove ™, © and ® symbols, "
+        "2) Do not use any html markup, "
+        "3) Do not use any urls, "
+        "4) Maintain brand/model name consistency with title"
+        "5) Keep length under 150 characters",
+        max_length=300,  # Leaving this at 300 to be safe so that importing existing products doesnt break
     )
     asin: Optional[str] = Field(
         None,
