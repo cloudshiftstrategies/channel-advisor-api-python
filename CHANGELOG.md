@@ -1,7 +1,20 @@
 # CHANGELOG
 
 
+## v0.2.1 (2025-03-03)
+
+### Bug Fixes
+
+- **shortDescr**: Changed prompting for short description
+  ([`3bbaf25`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/3bbaf258e14262e9e003b3c0c7dacd5360f72613))
+
+
 ## v0.2.0 (2025-02-28)
+
+### Chores
+
+- **release**: Bump version to 0.2.0
+  ([`e9d8dc1`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/e9d8dc1447d369fbfaf5fc066d8e049e90a5b58d))
 
 ### Features
 
