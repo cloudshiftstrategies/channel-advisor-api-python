@@ -243,13 +243,14 @@ class MinProduct(BaseProduct):
     description: Optional[str] = Field(
         None,
         alias="Description",
-        max_length=2000,
+        # max_length=2000,  # This causes issues with importing existing products
         description="HTML product description: "
         "1) Remove ™, © and ® symbols, "
         "2) Use <br> for line breaks and new lines. Break up long paragraphs into smaller chunks, "
         "3) Preserve formatting like <strong>, <em>, <ul>, <li>, "
         "4) Keep URLs intact, "
-        "5) Maintain brand/model name consistency with title",
+        "5) Maintain brand/model name consistency with title"
+        "6) Keep length under 2000 characters",
     )
     short_description: Optional[str] = Field(
         None,
@@ -260,7 +261,7 @@ class MinProduct(BaseProduct):
         "3) Do not use any urls, "
         "4) Maintain brand/model name consistency with title"
         "5) Keep length under 150 characters",
-        max_length=300,  # Leaving this at 300 to be safe so that importing existing products doesnt break
+        # max_length=300,  # This causes issues with importing existing products
     )
     asin: Optional[str] = Field(
         None,
