@@ -1,12 +1,25 @@
 # CHANGELOG
 
 
+## v0.2.2 (2025-03-05)
+
+### Bug Fixes
+
+- **product**: Remove description max length constraints
+  ([`2b49da2`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/2b49da2818e94a629049e9949a6a97da7367a8a9))
+
+
 ## v0.2.1 (2025-03-03)
 
 ### Bug Fixes
 
 - **shortDescr**: Changed prompting for short description
   ([`3bbaf25`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/3bbaf258e14262e9e003b3c0c7dacd5360f72613))
+
+### Chores
+
+- **release**: Bump version to 0.2.1
+  ([`cfe4dbe`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/cfe4dbef766cf65feb5fb622b8c15528b931d52f))
 
 
 ## v0.2.0 (2025-02-28)

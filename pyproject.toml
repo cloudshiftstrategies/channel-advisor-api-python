@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "channel-advisor-api-python"
-version = "0.2.1"
+version = "0.2.2"
 description = ""
 authors = ["Brian Peterson <brian.peterson@cloudshift.cc>"]
 readme = "README.md"
