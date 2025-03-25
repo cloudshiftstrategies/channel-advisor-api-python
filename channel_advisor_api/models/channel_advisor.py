@@ -209,7 +209,7 @@ class BaseProduct(BaseModel, ABC):
 
     @property
     def children(self) -> List["MinProduct"]:
-        return self.all(filter=f"ParentProductID eq {self.id}")
+        return self.all(filter=f"ParentProductID eq {self.id} and IsParent ne true")
 
     @property
     def child_ids(self) -> List[int]:
