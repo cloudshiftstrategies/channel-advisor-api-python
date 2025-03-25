@@ -1,12 +1,25 @@
 # CHANGELOG
 
 
+## v0.2.3 (2025-03-25)
+
+### Bug Fixes
+
+- **product**: Minproduct.children sometimes included parent
+  ([`925e262`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/925e26284ed3c2fa51ebcac5b9fa38e1290dd233))
+
+
 ## v0.2.2 (2025-03-05)
 
 ### Bug Fixes
 
 - **product**: Remove description max length constraints
   ([`2b49da2`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/2b49da2818e94a629049e9949a6a97da7367a8a9))
+
+### Chores
+
+- **release**: Bump version to 0.2.2
+  ([`d8e0d41`](https://github.com/cloudshiftstrategies/channel-advisor-api-python/commit/d8e0d41127b46bb975d492ae19f0fc6378bbc437))
 
 
 ## v0.2.1 (2025-03-03)
